@@ -16,7 +16,7 @@ export class User {
     role: string;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'List' }] })
-    List: string[];
+    List: any[any];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
