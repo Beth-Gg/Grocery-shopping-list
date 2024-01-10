@@ -7,11 +7,12 @@ import { User, UserDocument } from './users.model'
 export class UsersService {
     constructor (@InjectModel('user') private readonly userModel: Model<UserDocument>) {}
 
-    async createUser(username: string, password: string): Promise<User> {
+    async createUser(username: string, password: string, role: string): Promise<User> {
         //await maybe
         return this.userModel.create({
             username,
             password,
+            role,
         });
     }
 
