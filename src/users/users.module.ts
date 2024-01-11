@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {User, UserSchema} from './users.model';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { List, ListSchema } from '../Lists/lists.model'
+import { List, ListSchema } from '../Lists/lists.model';
+import { JwtMiddleware } from 'src/authorization/jwt.middleware';
 
 @Module({
     imports: [MongooseModule.forFeature([
@@ -15,4 +16,8 @@ import { List, ListSchema } from '../Lists/lists.model'
     // providers: [UsersService],
     // controllers: [UsersController]
 })
-export class UsersModule {}
+export class UsersModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+      consumer.apply(JwtMiddleware).forRoutes(UsersController);
+    }
+  }
