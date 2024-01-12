@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './users.model'
 import { List, ListDocument } from 'src/Lists/lists.model';
+import { Mongoose } from 'mongoose';
 
 
 
@@ -12,21 +13,12 @@ export class UsersService {
         @InjectModel('user') private readonly userModel: Model<UserDocument>,
         @InjectModel('List') private readonly listModel: Model<ListDocument>,
     ) {}
-
-    async createUser(username: string, password: string, role: string): Promise<User> {
-        //await maybe
-        return this.userModel.create({
-            username,
-            password,
-            role,
-        });
-    }
+   
 
     async getUser(query: object ): Promise <User> {
         return this.userModel.findOne(query);
     }
 
-    /////
 
 
     async getUserById(userId): Promise<User> {
@@ -36,7 +28,9 @@ export class UsersService {
       }
       return user;
     }
-  //needs author
+  
+
+
     async editUser(userId: string, updatedUser: Partial<User>): Promise<User> {
       const user = await this.userModel.findByIdAndUpdate(userId, updatedUser, {
         new: true,
@@ -46,7 +40,9 @@ export class UsersService {
       }
       return user;
     }
-  //needs author
+  
+
+
     async deleteUser(userId: string): Promise<void> {
       const user = await this.userModel.findByIdAndDelete(userId);
       if (!user) {
@@ -54,22 +50,16 @@ export class UsersService {
       }
     }
   
-    // this isnot working
+    
 
     async getAllUsers(): Promise<any> {
-      const users = await this.userModel.find().exec();
-      return users.map(li => ({
-        id: li.id,
-        username: li.username,
-        password: li.password,
-    }));
+      const users = await this.userModel.find();
+      return users;
     }
 
 
 
-    //// list functions
-
-
+   
     async createList(userId: string, date: string, content: string): Promise<any> {
         const user = await this.userModel.findById(userId);
         if (!user) {
@@ -90,6 +80,8 @@ export class UsersService {
         return list;
       }
 
+      
+
       async getLists(userId: string): Promise<any> {
         const user = await this.userModel.findById(userId).populate('List');
         if (!user) {
@@ -98,84 +90,78 @@ export class UsersService {
     
         return user.List;
       }
-    
+      
+
+
       async getListById(userId, listId: string): Promise<List> {
-        // const userId = this.request.user.id; // Assuming you have user information in the request
-        const user = await this.userModel.findById(userId).populate('List');
         
-        if (!user) {
-          throw new NotFoundException('User not found');
-        }
-    
-        const list = user.List.find((l) => l._id.toString() === listId);
-        if (!list) {
-          throw new NotFoundException('List not found');
-        }
-    
-        return list;
-      }
-    
-      async updateList(userId, listId: string, date: string, content: string): Promise<List> {
-      
-        // const userId = this.request.user.id; // Assuming you have user information in the request
-        const user = await this.userModel.findById(userId).populate('List');
-        
-        if (!user) {
-          throw new NotFoundException('User not found');
-        }
-    
-        const list = user.List.find((l) => l._id.toString() === listId);
-        if (!list) {
-          throw new NotFoundException('List not found');
-        }
-    
-        // Update the list using the mongoose model
-        await this.listModel.findByIdAndUpdate(listId, { date, content });
-    
-        // Optional: You can fetch the updated list from the database if needed
-        const updatedList = await this.listModel.findById(listId);
-    
-        // Return the updated list
-        return updatedList;
-      }
+        // console.log(userId);
+        // console.log(listId);
 
 
-    //   private async findList(id): Promise<List> {
-    //     let list;
-    //     try {
-    //         list = await this.listModel.findById(id);
-    //     }
-    //     catch(error) {
-    //         throw new NotFoundException('No such list!')
-    //     }
-    //     if(!list) {
-    //         throw new NotFoundException('No such List!');
-    //     }
-    //     return list;
-    // }
-
-
-    //   async updateList (listId, date: string, listContent: string) {
-    //     const editedList = await this.findList(listId);
-    //     if(date) {
-    //         editedList.date = date;
-    //     }
-    //     if(listContent) {
-    //         editedList.content = listContent;  
-    //     }
-
-    //     return editedList;
-    // }
-      
-      //
-      async deleteList(userId: string, listId: string): Promise<void> {
         const user = await this.userModel.findById(userId);
+        
         if (!user) {
           throw new NotFoundException('User not found');
         }
+    
+        const list = user.List.find((l) => l._id.toString() === listId);
+        if (!list) {
+          throw new NotFoundException('List not found');
+        }
+    
+        return list.toJSON();
+      }
+    
+
+      async updateList(userId, listId: string, date: string, content: string): Promise<List> {
+
+        console.log(userId);
+        console.log(listId);
       
-        user.List = user.List.filter((list) => list._id.toString() !== listId);
-        await user.save();
+        const user = await this.userModel.findById(userId);
+        
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+        console.log(user.List);
+        const list = user.List.find((l) => l._id.toString() === listId);
+        if (!list) {
+          throw new NotFoundException('List not found');
+        }
+    
+        const updatedList = await this.listModel.findByIdAndUpdate(
+          listId,
+          {$set: {date: date, content: content}},
+          { new: true }
+        );
+      
+        if (!updatedList) {
+          throw new NotFoundException('Updated list not found');
+        }
+      
+        return updatedList;
+      
+      }
+
+
+      async deleteList(userId: string, listId: string): Promise<void> {
+
+        console.log(userId);
+        console.log(listId);
+
+        try {
+          const user = await this.userModel.findById(userId);
+    
+          if (!user) {
+            throw new NotFoundException('User not found');
+          }
+    
+          user.List = user.List.filter((list) => list._id.toString() !== listId);
+          await user.save();
+        } catch (error) {
+          throw new NotFoundException('List not found');
+        }
       }
       
 

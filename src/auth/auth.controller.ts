@@ -2,6 +2,10 @@ import { Controller, Request, Post, UseGuards, Response, Body } from '@nestjs/co
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response as ExpressResponse} from 'express';
+import * as bcrypt from 'bcrypt';
+import { User } from 'src/users/users.model';
+import { UsersService } from 'src/users/users.service';
+
 
 
 
@@ -23,5 +27,23 @@ export class AuthController {
     return {
       message: 'Success',
     };
+  }
+
+
+  @Post('/signup')
+  async createUser(
+      @Body ('password') password: string,
+      @Body ('username') username: string,
+      @Body ('role') role: string,
+
+  ): Promise<User> {
+      const saltOrRounds = 5;
+      const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+      const result = await this. authService.createUser(
+          username,
+          hashedPassword,
+          role
+      );
+      return result;
   }
 }
