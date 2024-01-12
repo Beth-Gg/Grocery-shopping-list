@@ -12,7 +12,7 @@ To ensure security and personalization, the app features user authentication. Ne
 
 Within each list, you have the flexibility to add, edit, or remove items, tailoring your lists to your specific needs. Whether you're a meticulous planner or prefer spontaneity, our Grocery Shopping List Web App is here to streamline your grocery shopping. Get started by cloning the repository, installing dependencies, and configuring the app to suit your preferences. Happy shopping!
 
-
+# •	The finalized project is on the list-REST-API branch.
 # Frontend Structure
 ## src
 
@@ -91,6 +91,8 @@ d.	Delete: An admin can delete a user from the database.
 ### Excellent Results: MongoDB's read and write speed is optimized. Its memory-mapped storage engine and index support make it an effective query tool, particularly when working with big datasets.
 ### Framework for Aggregation: A strong aggregation architecture offered by MongoDB enables sophisticated data processing, filtering, and querying. This may be used to create summary, analytics, and personalized shopping list views.
 ### Ecosystem and Community: The MongoDB community is sizable and vibrant. This indicates that a wealth of information, guides, and third-party tools are accessible. Various drivers for different programming languages are part of the MongoDB ecosystem.
+
+# •	The finalized project is on the list-REST-API branch.
 
 
 
