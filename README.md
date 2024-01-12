@@ -65,9 +65,13 @@ An administrator has the ability to add, remove, and edit users.
 A user can 
 a.	Create  :Uusers can create an account and set up their password. 
       A User can create a list with list items inside after he/she has signed up
+      
 b.	Read: Users can see the lists they have  created
+
 c.	 Delete: User can delete a list that has been created
+
 d.	 Update: A user can edit the lists name, date and the items inside the list
+
 ### 2.Admin
 An admin has the following features
 a.	Create: An admin can create a user
