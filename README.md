@@ -52,4 +52,37 @@ Please note that these privileges are exclusively granted to administrators to e
 
 We recommend using these privileges responsibly and only accessing and modifying user accounts within the scope of your administrative duties.
 
-                                                                                                                  
+#Authentication and Authorization
+To utilize its capabilities, the shopping list website requires registration. The listings page is not accessible to users who are not signed up or logged in. 
+Both users and administrators have a logout option located within the navigation bar. Users are sent to the login page by clicking the logout button.
+Users may add lists, along with the dates and items they include, on the lists page, which also shows any existing lists that have been established. 
+An administrator has the ability to add, remove, and edit users.
+
+
+#Overview of CRUD CAPABILITIES
+##Features
+###USER
+A user can 
+a.	Create  : A user can create an account and set up their password. 
+A User can create a list with list items inside after he/she has signed up
+b.	Read: Users can see the lists he/she has created
+c.	 Delete: User can delete a list that has been created
+d.	 Update: A user can edit the lists name, date and the items inside the list
+### Admin
+An admin has the following features
+a.	Create: An admin can create a user
+b.	Read: Users information is displayed on the admins dashboard
+c.	Update: An Admin can change/update users credentials(i.e. username and password)
+d.	Delete: An admin can delete a user from the database.
+
+
+#Database Justification
+Adaptable Schema Architecture: A flexible, schema-less document model is used by the NoSQL database MongoDB. This adaptability is useful for managing data with varied formats, which is typical in shopping lists where different properties may apply to different products.
+Scalability: Because MongoDB is made to scale horizontally across several servers, it can manage a big user base and an expanding dataset. Scalability is important as user loads on a shopping list website may fluctuate.
+Excellent Results: MongoDB's read and write speed is optimized. Its memory-mapped storage engine and index support make it an effective query tool, particularly when working with big datasets.
+Framework for Aggregation: A strong aggregation architecture offered by MongoDB enables sophisticated data processing, filtering, and querying. This may be used to create summary, analytics, and personalized shopping list views.
+Ecosystem and Community: The MongoDB community is sizable and vibrant. This indicates that a wealth of information, guides, and third-party tools are accessible. Various drivers for different programming languages are part of the MongoDB ecosystem.
+
+
+
+                                                                                                                
