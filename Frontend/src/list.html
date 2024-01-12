@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping List</title>
+  <link href = "./output.css" rel = "stylesheet">
+  <!-- Add your CSS stylesheets or include them in your project -->
+</head>
+<body>
+
+
+    <header class=" p-5 bg-orange-400">
+        <nav class=" flex justify-between">
+            <div>
+                <img src="./Images/Shemeta.jpg" class=" rounded-2xl w-20" >
+            </div>
+
+            <div class=" text-stone-50 text-lg ">
+                <ul class="flex justify-between text- font-serif">
+                    <li class="p-10"> <a href="./list.html" class="text-red-950">  Home</a> </li>
+                    <li class="p-10"> <a id="log-btn" href="./logout.html"> Logout</a> </li>
+                </ul>
+
+            </div>
+        </nav>
+    </header>
+
+
+  <div>
+    <h1 class = "text-4xl text-center">Create Your Own List</h1>
+  </div>
+  <div class="w-3/4 mx-auto h-100 ">
+    <div class="border-2 border-slate-200 hidden" id="formin">
+      <form class="bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 flex justify-center flex-col">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="list-name-input">
+            List Name:
+          </label>
+          <input class="shadow appearance-none border-2 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="list-name-input" type="text" placeholder="List Name">
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="date-input">
+            Date:
+          </label>
+          <input class="shadow appearance-none border-2 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="date-input" type="date">
+        </div>
+        <div class="flex items-center justify-center mt-8">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" id="addButton">
+            Add
+          </button>
+        </div>
+      </form>
+    </div>
+
+
+
+    <div id="listContainer"></div>
+
+    <div id="updateModal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden">
+      <div class="w-3/4 mx-auto bg-white shadow-lg rounded p-8">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="update-name-input">
+          New Name:
+        </label>
+        <input class="shadow appearance-none border-2 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="update-name-input" type="text" placeholder="Enter a name">
+
+        <label class="block text-gray-700 text-sm font-bold mt-4 mb-2" for="update-date-input">
+          New Date:
+        </label>
+        <input class="shadow appearance-none border-2 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="update-date-input" type="date">
+
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" id="updateDoneButton">
+          Update
+        </button>
+      </div>
+    </div>
+
+    <div class="flex justify-center">
+      <button class="border-2 bg-blue-500 hover:bg-slate-600 text white font-bold p-2 px-4 rounded flex flex-row mt-4" id="addListButton">
+        <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px" viewBox="0 0 45.402 45.402" xml:space="preserve">
+          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+          <g id="SVGRepo_iconCarrier">
+            <g>
+              <path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z"></path>
+            </g>
+          </g>
+        </svg>
+        <span class="ml-1">Add Shopping list</span>
+      </button>
+    </div>
+
+    <div id="listContainer"></div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var addListButton = document.getElementById("addListButton");
+        var formContainer = document.getElementById("formin");
+        var listContainer = document.getElementById("listContainer");
+        var updateModal = document.getElementById("updateModal");
+        var updateNameInput = document.getElementById("update-name-input");
+        var updateDateInput = document.getElementById("update-date-input");
+        var updateDoneButton = document.getElementById("updateDoneButton");
+
+        addListButton.addEventListener("click", function () {
+          formContainer.classList.remove("hidden");
+        });
+
+        var addButton = document.getElementById("addButton");
+        addButton.addEventListener("click", function () {
+          var listNameInput = document.getElementById("list-name-input");
+          var dateInput = document.getElementById("date-input");
+
+          var listName = listNameInput.value;
+          var date = dateInput.value;
+
+          if (listName) {
+            var newListCard = document.createElement("div");
+            newListCard.classList.add("w-100","border-solid", "border-2", "border-slate-200", "shadow-lg", "my-6", "mx-3");
+
+            var headerContainer = document.createElement("div");
+            headerContainer.classList.add("w-100",  "mb-4");
+
+            var listButtonContainer = document.createElement("button");
+            listButtonContainer.classList.add("text-4xl", "text-center", "h-24", "bg-blue-500","w-full", "hover:bg-blue-700", "text-white", "font-bold", "py-2","rounded", "focus:outline-none", "focus:shadow-outline");
+            listButtonContainer.textContent = listName + " - " + date;
+
+            var buttonsContainer = document.createElement("div");
+            buttonsContainer.classList.add("flex", "justify-center","space-x-2");
+
+            var updateListButton = document.createElement("button");
+            updateListButton.classList.add("update-list-button", "border-2", "bg-blue-400", "hover:bg-blue-600", "text-white", "font-bold", "p-2", "rounded");
+            updateListButton.setAttribute("id","updateListButton")
+            updateListButton.textContent = "Update List";
+
+            var deleteListButton = document.createElement("button");
+            deleteListButton.classList.add("delete-list-button", "border-2", "bg-blue-400", "hover:bg-blue-600", "text-white", "font-bold", "p-2", "rounded");
+            deleteListButton.textContent = "Delete List";
+
+            buttonsContainer.appendChild(updateListButton);
+            buttonsContainer.appendChild(deleteListButton);
+
+            headerContainer.appendChild(listButtonContainer);
+            headerContainer.appendChild(buttonsContainer);
+
+            newListCard.appendChild(headerContainer);
+
+            // Rest of your code...
+
+            deleteListButton.addEventListener("click", function () {
+              newListCard.remove();
+            });
+
+            updateListButton.addEventListener("click", function () {
+              updateNameInput.value = listName; // Set the current name as default
+              updateDateInput.value = date; // Set the current date as default
+              updateModal.classList.remove("hidden");
+            });
+
+            updateDoneButton.addEventListener("click", function () {
+              // Update the name and date on the card
+              var updatedName = updateNameInput.value;
+              var updatedDate = updateDateInput.value;
+
+              if (updatedName && updatedDate) {
+                listButtonContainer.textContent = updatedName + " - " + updatedDate;
+
+                // Hide the modal
+                updateModal.classList.add("hidden");
+              }
+            });
+
+            listContainer.appendChild(newListCard);
+
+  
+          var newItemCard = document.createElement("div");
+          newItemCard.classList.add("item-card");
+  
+          var itemInputContainer = document.createElement("div");
+          itemInputContainer.classList.add("input-container");
+  
+          var itemInput = document.createElement("input");
+          itemInput.type = "text";
+          itemInput.classList.add("item-input","w-4/5");
+          itemInput.placeholder = "Enter an item";
+  
+          var plusButton = document.createElement("button");
+          plusButton.classList.add("plus-button", "mr-auto" , "mr-0", "flex-shrink-0");
+          plusButton.textContent = "+";
+  
+          plusButton.addEventListener("click", function () {
+            var newItem = itemInput.value.trim();
+            
+            if (newItem) {
+              var listItem = document.createElement("li");
+              listItem.textContent = newItem;
+              var deleteButton = document.createElement("button");
+              deleteButton.classList.add("delete-button", "border-2", "border-slate-200","ml-12", "justify-end","bg-red-400", "rounded");
+              deleteButton.textContent = "Delete";
+  
+              deleteButton.addEventListener("click", function () {
+                listItem.remove();
+              });
+              var deleteContainer = document.createElement("div");
+deleteContainer.classList.add("flex","items-center","justify-evenly", "p-4","mr-auto", "ml-auto","mb-2"); // Added mb-4 for margin-bottom
+
+deleteContainer.appendChild(listItem);
+deleteContainer.appendChild(deleteButton);
+
+var itemList = document.createElement("ul");
+itemList.appendChild(deleteContainer);
+
+newItemCard.appendChild(itemList);
+itemInput.value = "";
+  
+              listItem.appendChild(deleteButton);
+              
+  
+              var itemList = document.createElement("ul");
+              itemList.appendChild(listItem);
+
+  
+              newItemCard.appendChild(itemList);
+              itemInput.value = "";
+            }
+          });
+  
+          itemInputContainer.appendChild(itemInput);
+          itemInputContainer.appendChild(plusButton);
+  
+          newItemCard.appendChild(itemInputContainer);
+  
+          newListCard.appendChild(newItemCard);
+  
+          listNameInput.value = "";
+          dateInput.value = "";
+          formContainer.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+
+  <script src="./list-checker.js"> </script>
+  
+  
+
+  
+</body>
+</html>
