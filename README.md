@@ -75,6 +75,7 @@ d.	 Update: A user can edit the lists name, date and the items inside the list
 
 ### 2.Admin
 An admin has the following features
+
 a.	Create: An admin can create a user
 
 b.	Read: Users information is displayed on the admins dashboard
