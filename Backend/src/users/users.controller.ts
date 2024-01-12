@@ -10,24 +10,24 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
 
-    @Post('/signup')
-    async createUser(
-        @Body ('password') password: string,
-        @Body ('username') username: string,
-        @Body ('role') role: string,
+    // @Post('/signup')
+    // async createUser(
+    //     @Body ('password') password: string,
+    //     @Body ('username') username: string,
+    //     @Body ('role') role: string,
 
-    ): Promise<User> {
-        const saltOrRounds = 5;
-        const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-        const result = await this. usersService.createUser(
-            username,
-            hashedPassword,
-            role
-        );
-        return result;
-    }
+    // ): Promise<User> {
+    //     const saltOrRounds = 5;
+    //     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+    //     const result = await this. usersService.createUser(
+    //         username,
+    //         hashedPassword,
+    //         role
+    //     );
+    //     return result;
+    // }
 
-    
+    //works
     @Get(':id')
     @Role('admin')
     @UseGuards(AuthorizationGuard)
@@ -38,7 +38,7 @@ export class UsersController {
     
     
    
-    
+    //works
     @Role('admin')
     @UseGuards(AuthorizationGuard)
     @Patch(':id')
@@ -52,7 +52,7 @@ export class UsersController {
     
     
     
-    
+    //works
     @Role('admin')
     @UseGuards(AuthorizationGuard)
     @Delete(':id')
@@ -93,23 +93,28 @@ export class UsersController {
     @UseGuards(AuthorizationGuard)
     @Get('list/:listId')
     async getListById(@Request() request, @Param('listId') listId ) {
-      return this.usersService.getListById(request.user.sub, listId);
+      const userId = request.user.sub;
+      return this.usersService.getListById(userId, listId);
     } // returning null
     
     
     @Role('user')
     @UseGuards(AuthorizationGuard)
-    @Put('list/:id')
+    @Patch('list/:id')
     async updateList(@Request() request, @Param('id') listId: string, @Body('date') date: string, @Body('content') listContent: string) {
-      return this.usersService.updateList(request.user.sub, listId, date, listContent);
+      const userId = request.user.sub;
+
+      return this.usersService.updateList(userId, listId, date, listContent);
     }
     
     
     @Role('user')
     @UseGuards(AuthorizationGuard)
     @Delete('list/:id')
-    async deleteList(@Request() req, @Param('id') id: string) {
-      return this.usersService.deleteList(req.user.userId, id);
+    async deleteList(@Request() request, @Param('id') listId: string) {
+      const userId = request.user.sub;
+
+      return this.usersService.deleteList(userId, listId);
     }
 
 }
