@@ -102,12 +102,12 @@ export class UsersService {
       async getListById(userId, listId: string): Promise<List> {
         // const userId = this.request.user.id; // Assuming you have user information in the request
         const user = await this.userModel.findById(userId).populate('List');
-        
+        console.log(userId);
         if (!user) {
           throw new NotFoundException('User not found');
         }
     
-        const list = user.List.find((l) => l._id.toString() === listId);
+        const list = user.List.find((l) => l === listId);
         if (!list) {
           throw new NotFoundException('List not found');
         }
@@ -115,29 +115,60 @@ export class UsersService {
         return list;
       }
     
-      async updateList(userId, listId: string, date: string, content: string): Promise<List> {
+      // async updateList(userId, listId: string, date: string, content: string): Promise<List> {
       
-        // const userId = this.request.user.id; // Assuming you have user information in the request
-        const user = await this.userModel.findById(userId).populate('List');
+      //   // const userId = this.request.user.id; // Assuming you have user information in the request
+      //   const user = await this.userModel.findById(userId).populate('List');
         
+      //   if (!user) {
+      //     throw new NotFoundException('User not found');
+      //   }
+    
+      //   // const list = user.List.findByIdAndUpdate (listId, { date, content });
+      //   // // console.log (l._id.toString)
+      //   // if (!list) {
+      //   //   throw new NotFoundException('List not found');
+      //   // }
+
+      //   // list.save();
+    
+      //   // Update the list using the mongoose model
+      //   await this.listModel.findByIdAndUpdate(listId, { date, content }, { new: true } );
+    
+      //   // // Optional: You can fetch the updated list from the database if needed
+      //   const updatedList = await this.listModel.findById(listId);
+    
+      //   // // Return the updated list
+      //   return updatedList;
+      // }
+
+      async updateList(userId, listId, date, content) {
+        // Find the user by userId and populate the 'List' field
+        const user = await this.userModel.findById(userId).populate('List');
+      
         if (!user) {
           throw new NotFoundException('User not found');
         }
-    
-        const list = user.List.find((l) => l._id.toString() === listId);
-        if (!list) {
+      
+        // Find the specific list within the user's List array
+        user.List = user.List.find((list) => list._id.toString() === listId);
+      
+        if (!user.List) {
           throw new NotFoundException('List not found');
         }
-    
-        // Update the list using the mongoose model
-        await this.listModel.findByIdAndUpdate(listId, { date, content });
-    
-        // Optional: You can fetch the updated list from the database if needed
-        const updatedList = await this.listModel.findById(listId);
-    
-        // Return the updated list
-        return updatedList;
+      
+        // Update the properties of the list object
+        user.List.date = date;
+        user.List.content = content;
+      
+        // Save the updated user document (which will also update the embedded list)
+        await user.save();
+      
+        // Return the updated list object
+        return user.List;
       }
+      
+      
 
 
     //   private async findList(id): Promise<List> {

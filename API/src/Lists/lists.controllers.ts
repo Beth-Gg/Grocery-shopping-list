@@ -4,41 +4,41 @@ import { ListService } from './lists.service';
 @Controller()
 
 export class ListsController {
-    constructor(private readonly listsService: ListService) {}
+    constructor(private readonly ListsService: ListService) {}
 
     @Post('create')
     async createList(
-        @Body('date') listDate: string, 
-        @Body('content') listContent:string   
+        @Body('date') ListDate: string, 
+        @Body('content') ListContent:string   
     ): Promise<{ id: any; }> {
-        const generatedId = await this.listsService.insertList(listDate, listContent);
+        const generatedId = await this.ListsService.insertList(ListDate, ListContent);
         return {id: generatedId};
     }
 
     @Get('allLists')
     async getAllLists()  {  
-    const lists = await this.listsService.getLists();
-    return lists;
+    const Lists = await this.ListsService.getLists();
+    return Lists;
     }
 
     @Get(':id')
-    async getSingleList(@Param ('id') listId: string) {
-        const List = await this.listsService.getList(listId);
+    async getSingleList(@Param ('id') ListId: string) {
+        const List = await this.ListsService.getList(ListId);
         return List; 
     }
 
     @Patch(':id') 
-    async editList(@Param('id') listId: string, 
+    async editList(@Param('id') ListId: string, 
     @Body('date') date: string, 
-    @Body ('content') listContent: string) {
+    @Body ('content') ListContent: string) {
 
-        const edited = await this.listsService.editList(listId, date, listContent);
+        const edited = await this.ListsService.editList(ListId, date, ListContent);
         return null;
     }
 
     @Delete(':id')
-    async deleteList(@Param('id') listId: string) {
-        await this.listsService.deleteList(listId);
+    async deleteList(@Param('id') ListId: string) {
+        await this.ListsService.deleteList(ListId);
         return null;
     }
 }

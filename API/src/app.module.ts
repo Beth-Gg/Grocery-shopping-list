@@ -6,12 +6,15 @@ import { listsModule } from './Lists/lists.module';
 import {MongooseModule} from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { shopsModule } from "./Shops/shops.module";
 
 @Module({
   imports: [listsModule, 
     AuthModule, 
     MongooseModule.forRoot('mongodb://localhost:27017/mekliye'), 
-    UsersModule],
+    UsersModule,
+    shopsModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

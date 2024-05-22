@@ -73,8 +73,8 @@ export class UsersController {
     ///////
     
     
-    @Role('user')
-    @UseGuards(AuthorizationGuard)
+    // @Role('user')
+    // @UseGuards(AuthorizationGuard)
     @Post('/list/:id')
     async createList(@Param ('id') userId, @Request() req, @Body('date') date: string, @Body('content') content: string) {
       return this.usersService.createList(userId, date, content);
@@ -99,17 +99,17 @@ export class UsersController {
     
     @Role('user')
     @UseGuards(AuthorizationGuard)
-    @Put('list/:id')
-    async updateList(@Request() request, @Param('id') listId: string, @Body('date') date: string, @Body('content') listContent: string) {
-      return this.usersService.updateList(request.user.sub, listId, date, listContent);
+    @Put('/:userId/list/:listId')
+    async updateList(@Param('userId') userId: string, @Param('listId') listId: string, @Body('date') date: string, @Body('content') listContent: string) {
+      return this.usersService.updateList(userId, listId, date, listContent);
     }
     
     
     @Role('user')
     @UseGuards(AuthorizationGuard)
-    @Delete('list/:id')
-    async deleteList(@Request() req, @Param('id') id: string) {
-      return this.usersService.deleteList(req.user.userId, id);
+    @Delete('/:userId/list/:listId')
+    async deleteList(@Param('userId') userId: string, @Param('listId') listId: string) {
+      return this.usersService.deleteList(userId, listId);
     }
 
 }
