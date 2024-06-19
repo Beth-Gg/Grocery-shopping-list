@@ -17,7 +17,8 @@ export class UsersController {
         @Body ('role') role: string,
 
     ): Promise<User> {
-        const saltOrRounds = 5;
+        console.log("recieved weeee", password, username);
+        const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltOrRounds);
         const result = await this. usersService.createUser(
             username,
@@ -39,8 +40,8 @@ export class UsersController {
     
    
     
-    @Role('admin')
-    @UseGuards(AuthorizationGuard)
+    // @Role('admin')
+    // @UseGuards(AuthorizationGuard)
     @Patch(':id')
     async editUser(
       @Param('id') userId: string,
@@ -89,12 +90,12 @@ export class UsersController {
     }
     
     
-    @Role('user')
-    @UseGuards(AuthorizationGuard)
-    @Get('list/:listId')
-    async getListById(@Request() request, @Param('listId') listId ) {
-      return this.usersService.getListById(request.user.sub, listId);
-    } // returning null
+    // @Role('user')
+    // @UseGuards(AuthorizationGuard)
+    // @Get('list/:listId')
+    // async getListById(@Request() request, @Param('listId') listId ) {
+    //   return this.usersService.getListById(request.user.sub, listId);
+    // } // returning null
     
     
     @Role('user')

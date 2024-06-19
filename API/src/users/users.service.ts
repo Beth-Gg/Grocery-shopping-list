@@ -95,27 +95,47 @@ export class UsersService {
         if (!user) {
           throw new NotFoundException('User not found');
         }
-    
+      console.log(user.List);
         return user.List;
       }
     
-      async getListById(userId, listId: string): Promise<List> {
-        // const userId = this.request.user.id; // Assuming you have user information in the request
-        const user = await this.userModel.findById(userId).populate('List');
-        console.log(userId);
+      // async getListById(userId, listId: string): Promise<List> {
+      //   // const userId = this.request.user.id; // Assuming you have user information in the request
+      //   const user = await this.userModel.findById(userId).populate('List');
+      //   console.log(userId);
+      //   if (!user) {
+      //     throw new NotFoundException('User not found');
+      //   }
+    
+      //   const list = user.List.find((l) => l === listId.toString);
+      //   if (!list) {
+      //     throw new NotFoundException('List not found');
+      //   }
+    
+      //   return list;
+      // }
+    
+      async updateList(userId: string, listId: string, date: string, content: string): Promise<User> {
+        // Find the user by ID
+        const user = await this.userModel.findById(userId).exec();
         if (!user) {
-          throw new NotFoundException('User not found');
+          throw new NotFoundException(`User with ID ${userId} not found`);
         }
     
-        const list = user.List.find((l) => l === listId);
+        // Find the list within the user's lists
+        const list = user.List.id(listId);
         if (!list) {
-          throw new NotFoundException('List not found');
+          throw new NotFoundException(`List with ID ${listId} not found`);
         }
     
-        return list;
-      }
+        // Update the fields
+        list.date = date;
+        list.content = content;
     
-      // async updateList(userId, listId: string, date: string, content: string): Promise<List> {
+        // Save the user document
+        await user.save();
+        return user;
+      }
       
       //   // const userId = this.request.user.id; // Assuming you have user information in the request
       //   const user = await this.userModel.findById(userId).populate('List');
@@ -124,13 +144,13 @@ export class UsersService {
       //     throw new NotFoundException('User not found');
       //   }
     
-      //   // const list = user.List.findByIdAndUpdate (listId, { date, content });
-      //   // // console.log (l._id.toString)
-      //   // if (!list) {
-      //   //   throw new NotFoundException('List not found');
-      //   // }
+      //   const list = user.List.findByIdAndUpdate (listId, { date, content }, {new: true});
+      //   // console.log (l._id.toString)
+      //   if (!list) {
+      //     throw new NotFoundException('List not found');
+      //   }
 
-      //   // list.save();
+      //   await user.save();
     
       //   // Update the list using the mongoose model
       //   await this.listModel.findByIdAndUpdate(listId, { date, content }, { new: true } );
@@ -142,31 +162,59 @@ export class UsersService {
       //   return updatedList;
       // }
 
-      async updateList(userId, listId, date, content) {
-        // Find the user by userId and populate the 'List' field
-        const user = await this.userModel.findById(userId).populate('List');
+      // async updateList(userId, listId, date, content) {
+      //   // Find the user by userId and populate the 'List' field
+      //   const user = await this.userModel.findById(userId).populate('List');
       
-        if (!user) {
-          throw new NotFoundException('User not found');
-        }
+      //   if (!user) {
+      //     throw new NotFoundException('User not found');
+      //   }
       
-        // Find the specific list within the user's List array
-        user.List = user.List.find((list) => list._id.toString() === listId);
+      //   // Find the specific list within the user's List array
+      //   user.List = user.List.find((list) => list._id.toString() === listId);
       
-        if (!user.List) {
-          throw new NotFoundException('List not found');
-        }
+      //   if (!user.List) {
+      //     throw new NotFoundException('List not found');
+      //   }
       
-        // Update the properties of the list object
-        user.List.date = date;
-        user.List.content = content;
+      //   // Update the properties of the list object
+      //   user.List.date = date;
+      //   user.List.content = content;
       
-        // Save the updated user document (which will also update the embedded list)
-        await user.save();
+      //   // Save the updated user document (which will also update the embedded list)
+      //   await user.save();
       
-        // Return the updated list object
-        return user.List;
-      }
+      //   // Return the updated list object
+      //   return user.List;
+      // }
+
+      // async updateList(userId, listId, date, content) {
+      //   // Find the user by userId and populate the 'List' field
+      //   const user = await this.userModel.findById(userId).populate('List');
+      
+      //   if (!user) {
+      //     throw new NotFoundException('User not found');
+      //   }
+      
+      //   // Find the specific list within the user's List array
+
+      //   const list = user.List.find(list => list._id.toString() === listId);      
+      //   if (!list) {
+      //     throw new NotFoundException('List not found');
+      //   }
+      
+      //   // Update the properties of the list object
+      //   list.date = date;
+      //   list.content = content;
+        
+      
+      //   // Save the updated user document (which will also update the embedded list)
+      //   await user.save();
+      
+      //   // Return the updated list object
+      //   return list;
+      // }
+      
       
       
 
@@ -199,13 +247,33 @@ export class UsersService {
     // }
       
       //
+      // async deleteList(userId: string, listId: string): Promise<void> {
+      //   const user = await this.userModel.findById(userId);
+      //   if (!user) {
+      //     throw new NotFoundException('User not found');
+      //   }
+      
+      //   user.List = user.List.filter((list) => list._id.toString() !== listId);
+      //   await user.save();
+      // }
+
       async deleteList(userId: string, listId: string): Promise<void> {
-        const user = await this.userModel.findById(userId);
+        // Find the user by ID
+        const user = await this.userModel.findById(userId).exec();
         if (!user) {
           throw new NotFoundException('User not found');
         }
-      
-        user.List = user.List.filter((list) => list._id.toString() !== listId);
+    
+        // Find the index of the list to be deleted
+        const listIndex = user.List.findIndex((list) => list._id.toString() === listId);
+        if (listIndex === -1) {
+          throw new NotFoundException('List not found');
+        }
+    
+        // Remove the list from the user's lists
+        user.List.splice(listIndex, 1);
+    
+        // Save the updated user document
         await user.save();
       }
       

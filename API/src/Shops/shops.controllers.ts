@@ -1,5 +1,8 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, Put, UseGuards } from '@nestjs/common';
 import { ShopService } from './shops.service';
+import { AuthorizationGuard } from 'src/authorization/authorization.guard';
+import { Role } from 'src/decorators/roles.decorator';
+
 
 @Controller('shop')
 
@@ -7,6 +10,8 @@ export class ShopsController {
     constructor(private readonly shopsService: ShopService) {}
 
     @Post('create')
+    @Role('admin')
+    @UseGuards(AuthorizationGuard)
     async createShop(
         @Body('name') shopName: string, 
         @Body('items') shopItems:string   
@@ -28,6 +33,8 @@ export class ShopsController {
     }
 
     @Put(':id') 
+    @Role('admin')
+    @UseGuards(AuthorizationGuard)
     async editShop(@Param('id') shopId: string, 
     @Body('name') name: string, 
     @Body ('items') items: string) {
@@ -37,6 +44,8 @@ export class ShopsController {
     }
 
     @Delete(':id')
+    @Role('admin')
+    @UseGuards(AuthorizationGuard)
     async deleteshop(@Param('id') shopId: string) {
         await this.shopsService.deleteShop(shopId);
         return null;
